@@ -1,0 +1,74 @@
+# docker-compose.yml
+# Spins up Prometheus, Loki, and OPA locally so AegisNode has real backends.
+# Run with: docker compose up -d
+
+version: "3.8"
+
+services:
+
+  # ── Prometheus ────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: aegisnode-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=7d"
+    restart: unless-stopped
+
+  # ── Grafana Loki ──────────────────────────────────────────────────────
+  loki:
+    image: grafana/loki:latest
+    container_name: aegisnode-loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
+
+  # ── Promtail (ships logs to Loki) ─────────────────────────────────────
+  promtail:
+    image: grafana/promtail:latest
+    container_name: aegisnode-promtail
+    volumes:
+      - /var/log:/var/log:ro
+      - ./config/promtail.yml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    depends_on: [loki]
+    restart: unless-stopped
+
+  # ── Open Policy Agent ─────────────────────────────────────────────────
+  opa:
+    image: openpolicyagent/opa:latest
+    container_name: aegisnode-opa
+    ports:
+      - "8181:8181"
+    volumes:
+      - ./policies:/policies
+    command:
+      - "run"
+      - "--server"
+      - "--addr=0.0.0.0:8181"
+      - "--log-level=info"
+      - "/policies"
+    restart: unless-stopped
+
+  # ── Grafana (optional dashboard) ──────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: aegisnode-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=aegisnode
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on: [prometheus, loki]
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  grafana_data:

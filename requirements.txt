@@ -1,0 +1,36 @@
+# AegisNode Requirements
+# Install with: pip install -r requirements.txt
+
+# LangChain + Ollama integration
+langchain>=0.3.0
+langchain-ollama>=0.2.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+
+# LangSmith tracing (LangChain observability)
+langsmith>=0.1.0
+
+# Vector store (local, no API key needed)
+chromadb>=0.5.0
+
+# Data validation (Guardrail #1)
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# HTTP client (Prometheus, Loki, OPA, Slack)
+httpx>=0.27.0
+
+# Kubernetes Python client
+kubernetes>=29.0.0
+
+# Kopf - Python Kubernetes operator framework
+kopf>=1.37.0
+
+# Logging
+loguru>=0.7.0
+
+# SSH (for node-level fixes)
+paramiko>=3.0.0
+
+# Env file loading
+python-dotenv>=1.0.0
