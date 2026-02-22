@@ -187,6 +187,3 @@ aegisnode/
 
 ---
 
-## What to Tell Interviewers
-
-> *"AegisNode implements a closed-loop AIOps OODA pipeline: Prometheus detects anomalies, Loki provides log context, ChromaDB retrieves relevant runbooks via RAG, and a locally-hosted Llama 3 model on my RTX 5080 performs root cause analysis — keeping sensitive EHR logs off the public internet for HIPAA compliance. Multi-layered guardrails include Pydantic schema validation of LLM output and Open Policy Agent policy-as-code to prevent dangerous actions like database deletion. A wait-and-verify loop monitors post-fix metrics and triggers automated rollback if health doesn't recover within 5 minutes."*
